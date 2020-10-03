@@ -1,0 +1,57 @@
+
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+bare_jid = xsd:string { pattern = "([^@]+@)?[^@/]+" }
+full_jid = xsd:string { pattern = "([^@]+@)?[^@/]+/.*" }
+unixtime = xsd:unsignedInt
+
+start = element Chatroom {
+  # we don't care about these attributes
+  attribute ver { xsd:unsignedInt },
+  attribute persistent { "true" },
+  attribute timestamp { unixtime },
+
+  element Name { text } ?,
+
+  # when missing, room is private?
+  element PubsubPublic { "true" } ?,
+  element PubsubAccessModel { "open" },
+  element PubsubPublishModel { "publishers" } ?,
+  element PubsubMaxItems { "20" | "10" | "1" | "22" | "50" | "30" | "100" },
+  # unknown what this is, probably something internal
+  # correlates with PubsubPublishModel
+  element PubsubItemChangeCallback { "xep45" } ?,
+
+  element Xep45DefaultRole { "visitor" | "none" } ?,
+  element Description { string } ?,
+  element Xep45Subject { string } ?,
+  element Xep45Password { string } ?,
+  element Xep45RealjidsRole { "none" | "visitor" | "moderator" | "participant" } ?,
+  element Xep45vCards { "true" } ?,
+  element Xep45Html { "true" } ?,
+  element Xep45PassAny { "true" } ?,
+  element Xep45SubjectRole { "none" | "participant" } ?,
+  element Xep45PrivMsgRole { "moderator" | "none" | "participant" } ?,
+  element Xep45InviteRole { "none" | "moderator" | "participant" } ?,
+
+  element FmucHistoryLen { "0" | "10" } ?,
+
+  element Xep45SubjectWho { full_jid } ?,
+  element Xep45SubjectWhen { unixtime } ?,
+  element Xep45DefaultHistory { "0" } ?,
+  element Xep45DefaultHistoryLen { "20" | "10" | "1" | "22" | "50" | "30" | "100" } ?,
+  element Xep45MaxOccupants { "0" | "20" | "100" | "50" },
+
+  (
+    element PubsubOutcast {
+      attribute reason { string } ?,
+      bare_jid
+    } |
+    element PubsubMember {
+      attribute reason { string } ?,
+      bare_jid
+    } |
+    element PubsubAdministrator { bare_jid } |
+    element PubsubOwner { bare_jid }
+  )+
+}

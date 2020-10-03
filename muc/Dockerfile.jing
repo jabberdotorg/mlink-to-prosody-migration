@@ -1,0 +1,5 @@
+FROM openjdk:11
+
+ADD https://github.com/relaxng/jing-trang/releases/download/V20181222/jing-20181222.zip .
+
+RUN unzip jing-20181222.zip && cp jing-20181222/bin/jing.jar . && rm -r jing-20181222
